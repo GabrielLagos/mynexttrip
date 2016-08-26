@@ -1,0 +1,16 @@
+{
+  "name": "silvertock",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start"
+  },
+  "dependencies": {
+    "moment": "^2.14.1",
+    "react": "15.2.1",
+    "react-native": "0.31.0",
+    "react-native-simple-store": "^1.1.0",
+    "react-native-video": "^0.9.0",
+    "rn-viewpager": "^1.1.3"
+  }
+}

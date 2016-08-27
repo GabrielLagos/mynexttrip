@@ -55,7 +55,7 @@ export default class EveningScreen extends Component {
         results     = results.slice(0, 3);
         console.log("results = " + JSON.stringify(results));
         return (
-            <Image style={styles.video} source={require('../images/evening.png')}>
+            <Image style={[styles.video] } source={require('../images/evening.png')}>
                 <View style={styles.container}>
                     <Text style={styles.description}>
                         Enter in the stop you leave from in the evening.
@@ -64,7 +64,7 @@ export default class EveningScreen extends Component {
                     <View style={styles.inputView}>
                         <TextInput
                             placeholder="Evening Departure"
-                            placeholderTextColor='#ccc'
+                            placeholderTextColor='#999'
                             style={styles.textInput}
                             onChangeText={this.onTextChanged.bind(this)}
                             autoFocus={false}
@@ -100,7 +100,7 @@ export default class EveningScreen extends Component {
 let styles = StyleSheet.create({
     letsGo : {
         position: 'absolute',
-        bottom: 120,
+        bottom: 18,
         right: 0,
         left:0,
         height: 50,
@@ -121,6 +121,8 @@ let styles = StyleSheet.create({
         borderRadius: 40,
         borderStyle: 'solid',
         alignSelf: 'center',
+        fontFamily: 'sans-serif-light',
+        fontWeight: '400',
         fontSize    : 22,
         textAlign   : 'center',
         color       : 'white',
@@ -145,6 +147,7 @@ let styles = StyleSheet.create({
         }
     },
     description: {
+        fontFamily: 'sans-serif-light',
         fontSize    : 22,
         textAlign   : 'center',
         color       : 'white',
@@ -189,12 +192,15 @@ let styles = StyleSheet.create({
         borderBottomColor: '#eee',
 
         marginBottom: 5,
+        marginLeft: 20,
+        marginRight: 20,
         padding     : 0,
     },
     textInput  : {
         backgroundColor: 'rgba(255,255,255, 0)',
         fontSize       : 25,
         margin         : 0,
+        textAlign: 'center',
         color          : 'white'
     }
 });

@@ -32,6 +32,7 @@ class DepartureDots extends Component {
 
     renderDots() {
         console.log("renderDots");
+        var index=0;
         return this.props.dots.map((dot) => {
             console.log(`new dot found ${dot}`);
             var anim                            = new Animated.Value(0);
@@ -43,11 +44,12 @@ class DepartureDots extends Component {
             Animated.timing(anim, {
                 toValue : dot,
                 easing  : Easing.bounce,
-                delay   : 5000,
-                duration: 2000
+                delay   : 200,
+                duration: 1000
             }).start();
+            index++;
             return (
-                <Animated.Image key={dot} style={[styles.dots,
+                <Animated.Image key={`${dot}-${index}`} style={[styles.dots,
                     {transform: [{rotate: interpolatedRotateDotsAnimation}]},
                     {
                         position : "absolute",

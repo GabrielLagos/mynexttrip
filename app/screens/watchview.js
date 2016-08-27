@@ -6,98 +6,64 @@ import React, {Component} from 'react';
 
 import {
     StyleSheet,
+    LayoutAnimation,
     Text,
+    UIManager,
     ScrollView,
     View
 } from 'react-native';
 import WatchFace from '../components/watchface/watchface';
 import DepartureDots from '../components/departuredots/departuredots'
-import {getJourneys} from '../services/silverrail'
-import moment from 'moment';
-
-const FIVE_MINUTES = 1000*60*5;
+import DeparturesList from './departurelist';
+import Countdown from './countdown';
 
 export default class WatchView extends Component {
     constructor(props) {
         super(props);
+        UIManager.setLayoutAnimationEnabledExperimental &&   UIManager.setLayoutAnimationEnabledExperimental(true);
     }
 
     componentDidMount() {
-        this.stops = this.props.stops || null;
-        this.updateDepartureTimes();
-        this.timer = setInterval(this.updateDepartureTimes.bind(this), FIVE_MINUTES);
+        this.setState({
+            departureTimes : []
+        });
     }
 
-    updateDepartureTimes() {
-        if (this.stops==null) {
-            console.log("no stops passed in!");
-            return;
-        }
-        console.log("we got stops!" + JSON.stringify(this.stops.morning,null,4));
-        var midday = new Date();
-        midday.setHours(12,0,0,0);
-        var departureTime = moment().subtract(15, 'minutes');
-
-        var fromStop = {};
-        var toStop = {};
-
-        if (departureTime.isAfter(moment(midday))) {
-            fromStop = this.stops.evening.stop;
-            toStop = this.stops.morning.stop;
-        } else {
-            fromStop = this.stops.morning.stop;
-            toStop = this.stops.evening.stop;
-        }
-        var from = (fromStop.SupportedModes.toLowerCase() == 'Bus')?
-            fromStop.Position :
-            fromStop.StopUid;
-
-        var to = (toStop.SupportedModes.toLowerCase() == 'Bus')?
-            toStop.Position :
-            toStop.StopUid;
-
-        var formatted = departureTime.format("YYYY-MM-DDTHH:mm");
-        getJourneys(formatted, from, to)
-            .then((response) => {
-                if (response==null || response.Status.Severity!=0) {
-                    console.log("Problem getting journey.");
-                    return;
-                }
-                console.log("response:" + JSON.stringify(response,null,4));
-                var journeys = response.Journeys;
-                var departureTimes = [];
-                for (var t=0;t<journeys.length;t++) {
-                    var journey = journeys[t];
-                    if (journey.Legs == null) {
-                        continue;
-                    }
-                    for (var i=0; i<journey.Legs.length; i++) {
-                        var leg = journey.Legs[i];
-                        var type = leg["__type"];
-                        if (type==null || !type.startsWith("TripLeg")) {
-                            continue;
-                        }
-                        var depart = leg.DepartTime;
-
-                        var description = `${leg.Headsign} service departing from ${leg.DestinationLocationDescription}`;
-                    }
-                }
-            })
-    }
-
-    componentWillUnmount() {
+    componentWillReceiveProps(nextProps) {
         if (this.timer) {
-            clearInterval(this.timer);
+            clearTimeout(this.timer);
+            this.timer = null;
         }
+        console.log(`got new props in watchview [${this.props.title}] ${JSON.stringify(nextProps, null, 4)}`);
+        this.setState({
+            departureTimes: nextProps.departureTimes,
+            title : nextProps.title
+        });
     }
+
 
     render() {
+        var minutes = [];
+        var nextDepartures = this.state && this.state.departureTimes? this.state.departureTimes : [];
+
+        if (this.state && this.state.departureTimes) {
+            minutes = this.state.departureTimes.map((element) => {
+                console.log(`element is ${JSON.stringify(element, null, 4)}`);
+                return element.departTime.get("minutes");
+            });
+        }
+
+        var title = this.state && this.state.title || "";
         return (
             <View style={styles.container}>
+                <Text>{title}</Text>
+                <Countdown departures={nextDepartures}/>
                 <WatchFace size={300} style={styles.watchFace}>
-                    <DepartureDots size={300} dots={[10, 20, 30]}/>
+                    <DepartureDots size={300} dots={minutes}/>
                 </WatchFace>
+                <DeparturesList departures={nextDepartures}/>
             </View>
+
         )
     }
 }
@@ -108,5 +74,8 @@ const styles = StyleSheet.create({
         justifyContent : 'center',
         alignItems     : 'center',
         backgroundColor: '#F5FCFF',
+    },
+    watchFace: {
+        paddingBottom: 50
     },
 });

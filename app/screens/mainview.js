@@ -6,18 +6,21 @@ import React, {Component} from 'react';
 
 import {
     StyleSheet,
+    DeviceEventEmitter,
     Text,
+    Dimensions,
     View
 } from 'react-native';
 
 import store from 'react-native-simple-store';
 import Onboarding from '../screens/onboarding'
 import Loading from '../screens/loading'
-import WatchView from '../screens/watchview'
+import CountdownViews from '../screens/countdownviews'
+const dismissKeyboard = require('dismissKeyboard')
 
 const defaultOnboarding = {
     complete: false,
-    page    : 0
+    page: 0
 };
 
 class MainView extends Component {
@@ -42,6 +45,7 @@ class MainView extends Component {
     }
 
     selectMorningStop(stop) {
+        dismissKeyboard();
         console.log(`morning Stop = ${JSON.stringify(stop, null, 4)}`);
         store.update('settings', {
             morning: {
@@ -52,6 +56,7 @@ class MainView extends Component {
     }
 
     selectEveningStop(stop) {
+        dismissKeyboard();
         console.log(`evening Stop = ${JSON.stringify(stop, null, 4)}`);
         store.update('settings', {
             evening: {
@@ -64,10 +69,17 @@ class MainView extends Component {
     onboardingCompleted() {
         store.update('onboarding', {
             complete: true,
-            page    : 0
+            page: 0
         })
-            .then(() => console.log("onboarding complete!"))
-
+            .then(() => {
+                this.setState({
+                    onBoarding: {
+                        complete: true,
+                        page: 0
+                    }
+                });
+                console.log("onboarding complete!");
+            })
     }
 
     render() {
@@ -84,27 +96,28 @@ class MainView extends Component {
             />);
         } else {
             return (
-                <WatchView stops={this.state.settings} style={styles.container}/>
+
+                <CountdownViews stops={this.state.settings} style={styles.container}/>
             );
         }
     }
 }
 
 const styles = StyleSheet.create({
-    container   : {
-        flex           : 1,
-        justifyContent : 'center',
-        alignItems     : 'center',
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
         backgroundColor: '#F5FCFF',
     },
-    welcome     : {
-        fontSize : 20,
+    welcome: {
+        fontSize: 20,
         textAlign: 'center',
-        margin   : 10,
+        margin: 10,
     },
     instructions: {
-        textAlign   : 'center',
-        color       : '#eeeeee',
+        textAlign: 'center',
+        color: '#eeeeee',
         marginBottom: 5,
     },
 });

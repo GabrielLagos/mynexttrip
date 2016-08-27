@@ -52,7 +52,7 @@ class MorningScreen extends Component {
 
     render() {
         var results = this.state && this.state.locations && this.state.locations.length && this.state.locations.length > 0 && this.state.locations || [];
-        results     = results.slice(0, 3);
+        results = results.slice(0, 3);
         console.log("results = " + JSON.stringify(results));
         return (
             <Image style={styles.video} source={require('../images/morning.png')}>
@@ -64,7 +64,7 @@ class MorningScreen extends Component {
                     <View style={styles.inputView}>
                         <TextInput
                             placeholder="Morning Departure"
-                            placeholderTextColor='#ccc'
+                            placeholderTextColor='#aaa'
                             style={styles.textInput}
                             onChangeText={this.onTextChanged.bind(this)}
                             autoFocus={false}
@@ -86,7 +86,8 @@ class MorningScreen extends Component {
                     </View>
 
                     {this.state && this.state.location &&
-                    <Text style={[styles.description,{color: '#ddffdd', fontSize: 15}]}>Morning stop is {this.state.location.Description}</Text>}
+                    <Text style={[styles.description, {color: '#ddffdd', fontSize: 15}]}>Morning stop
+                        is {this.state.location.Description}</Text>}
                 </View>
             </Image>
         );
@@ -96,76 +97,79 @@ class MorningScreen extends Component {
 export default MorningScreen;
 
 let styles = StyleSheet.create({
-    button     : {
-        position       : 'absolute',
+    button: {
+        position: 'absolute',
         backgroundColor: 'rgba(0,0,0, 0)',
-        top            : 10,
-        borderWidth : 1,
-        borderColor : '#eee',
-        borderRadius : 10,
-        right          : 10,
-        padding        : 10,
-        paddingRight   : 10,
-        elevation      : 0,
-        shadowColor    : "#000000",
-        shadowOpacity  : 0.1,
-        shadowRadius   : 1,
-        shadowOffset   : {
+        top: 10,
+        borderWidth: 1,
+        borderColor: '#eee',
+        borderRadius: 10,
+        right: 10,
+        padding: 10,
+        paddingRight: 10,
+        elevation: 0,
+        shadowColor: "#000000",
+        shadowOpacity: 0.1,
+        shadowRadius: 1,
+        shadowOffset: {
             height: 0,
-            width : 0
+            width: 0
         }
     },
-    description : {
+    description: {
         fontSize: 22,
         textAlign: 'center',
         color: 'white',
+        fontFamily: 'sans-serif-light',
         marginBottom: 10,
     },
-    buttonText : {
-        color   : 'white',
+    buttonText: {
+        color: 'white',
         fontSize: 30,
     },
     resultsView: {
-        alignItems  : 'center',
-        margin      : 2,
+        alignItems: 'center',
+        margin: 2,
         borderRadius: 14,
-        paddingLeft : 3,
+        paddingLeft: 3,
 
     },
-    text       : {
-        fontSize    : 14,
-        height      : 35,
-        marginTop   : 3,
+    text: {
+        fontSize: 14,
+        height: 35,
+        marginTop: 3,
         marginBottom: 3,
-        color       : '#eee',
-        fontFamily  : 'arial'
+        color: '#eee',
+        fontFamily: 'arial'
     },
-    video      : {
+    video: {
         justifyContent: 'center',
-        alignItems    : 'stretch',
-        resizeMode    : Image.resizeMode.cover,
-        flex          : 1,
-        width         : null,
-        height        : null
+        alignItems: 'stretch',
+        resizeMode: Image.resizeMode.cover,
+        flex: 1,
+        width: null,
+        height: null
     },
-    container  : {
-        flex           : 1,
-        justifyContent : 'center',
-        alignItems     : 'stretch',
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'stretch',
         backgroundColor: 'rgba(0,0,0,.4)',
     },
-    inputView  : {
+    inputView: {
         backgroundColor: 'rgba(255,255,255, 0)',
-        borderBottomWidth : 1,
-        borderBottomColor : '#eee',
-
-        marginBottom         : 5,
-        padding        : 0,
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+        marginLeft: 20,
+        marginRight: 20,
+        marginBottom: 5,
+        padding: 0,
     },
-    textInput  : {
+    textInput: {
         backgroundColor: 'rgba(255,255,255, 0)',
-        fontSize       : 25,
-        margin : 0,
-        color          : 'white'
+        fontSize: 25,
+        textAlign: 'center',
+        margin: 0,
+        color: 'white'
     }
 });

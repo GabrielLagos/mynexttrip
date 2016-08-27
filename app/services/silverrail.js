@@ -13,7 +13,7 @@ exports.getJourneys = function( date, from, to) {
     return fetch(uri)
         .then((response) => response.text())
         .then((responseText) => {
-            console.log("raw response = [%s]", responseText);
+            // console.log("raw response = [%s]", responseText);
             var response = JSON.parse(responseText);
             if (response.Status.Severity != 0) {
                 console.log("No Journeys found!");
@@ -21,6 +21,7 @@ exports.getJourneys = function( date, from, to) {
             if (response.Journeys) {
                 console.log(`Found ${response.Journeys.length} Journeys`);
             }
+            // console.log(`JUST GOT RESPONSE: ${JSON.stringify(response, null, 4)}`);
             return response;
         })
         .catch((error) => {

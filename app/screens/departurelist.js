@@ -22,19 +22,19 @@ export default class DepartureList extends Component {
         var results = this.props.departures || [];
         if (results.length > 0) {
             return (
-                <View style={styles.results}>
+                <ScrollView style={styles.results}>
                     {results.map((element, index) => {
 
                         {/*console.log(`ok: got element ${JSON.stringify(element, null, 4)}`);*/}
                         {/*console.log(`\t\tformatted time: ${element.departTime.format('HH:mm')}`)*/}
                         return (
-                            <View style={styles.resultRow} key={index}>
-                                <Text>{element.departTime.format('HH:mm')}</Text>
-                                <Text style={styles.departureDescription}>{element.description}</Text>
+                            <View style={[styles.resultRow, {opacity: element.departTime.isBefore()? 0.2: 1}]} key={index}>
+                                <Text style={styles.departTime}>{element.departTime.format('HH:mm')}</Text>
+                                <Text style={styles.departureDescription}>{element.originLocation}</Text>
                             </View>
                         )
                     })}
-                </View>
+                </ScrollView>
             )
         } else {
             return (
@@ -47,20 +47,31 @@ export default class DepartureList extends Component {
 const styles = StyleSheet.create({
     results: {
         flexDirection: 'column',
-        backgroundColor: '#aaa',
+        flex: 1,
     },
     resultRow : {
         flexDirection: 'row',
-        backgroundColor: '#aaa',
+        justifyContent: 'center',
+        alignSelf: 'stretch',
+        height: 40,
+        margin: 4,
+        flex: 1,
+        backgroundColor: 'transparent',
 
     },
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
         backgroundColor: '#F5FCFF',
     },
+    departTime : {
+        marginRight: 5,
+        textAlign: 'left',
+        fontWeight: 'bold',
+        alignSelf: 'center',
+    },
     departureDescription: {
+        alignSelf: 'center',
         color: 'black',
+        fontFamily : 'sans-serif'
     }
 });

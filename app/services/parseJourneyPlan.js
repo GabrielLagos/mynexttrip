@@ -42,6 +42,7 @@ exports.parseJourneyPlan = function(journeyPlanResponse, maxTime) {
                     originLocation : leg.OriginLocationDescription,
                     destinationLocation : leg.DestinationLocationDescription,
                     duration: leg.DurationMinutes,
+                    mode : leg.Mode,
                     changCount: journey.ChangeCount,
                     departTime : departTime,
                     description: description

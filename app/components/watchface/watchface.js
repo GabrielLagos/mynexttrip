@@ -44,7 +44,7 @@ class WatchFace extends Component {
                     this.updateTime();
                     return;
                 }
-                this.startAnimation(animation, 0, toValue, maxDuration || duration);
+                //this.startAnimation(animation, 0, toValue, maxDuration || duration);
             }
         });
     }
@@ -190,6 +190,7 @@ class WatchFace extends Component {
 
 const styles = StyleSheet.create({
     container : {
+        opacity : 1,
         flexDirection  : 'column',
         backgroundColor: 'transparent',
         width          : 100,

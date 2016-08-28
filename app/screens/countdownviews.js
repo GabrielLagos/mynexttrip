@@ -7,6 +7,7 @@ import React, {Component} from 'react';
 import {
     StyleSheet,
     Text,
+    AppState,
     UIManager,
     LayoutAnimation,
     Dimensions,
@@ -43,11 +44,27 @@ export default class CountdownViews extends Component {
         this.updateDepartureTimes();
         //update departure times every 5 minutes
         this.timer = setInterval(this.updateDepartureTimes.bind(this), FIVE_MINUTES);
+        AppState.addEventListener('change', this.handleAppStateChange.bind(this));
     }
 
     componentWillUnmount() {
+        AppState.removeEventListener('change', this.handleAppStateChange);
         if (this.timer) {
             clearInterval(this.timer);
+        }
+    }
+
+    handleAppStateChange(currentAppState) {
+        if (currentAppState == 'active') {
+            console.log("app has woken up! starting departureTimes updater (runs every 5 minutes)...");
+            this.updateDepartureTimes();
+            //update departure times every 5 minutes
+            this.timer = setInterval(this.updateDepartureTimes.bind(this), FIVE_MINUTES);
+        } else {
+            console.log("countdownviews: app minimising.");
+            if (this.timer) {
+                clearInterval(this.timer);
+            }
         }
     }
 
@@ -60,7 +77,7 @@ export default class CountdownViews extends Component {
         midday.setHours(12, 0, 0, 0);
         var departureTime = new moment().subtract(15, 'minutes');
 
-        var maxTime = new moment().add(59, 'minutes');
+        this.maxTime = new moment().add(59, 'minutes');
 
         var fromStop = {};
         var toStop = {};
@@ -89,7 +106,7 @@ export default class CountdownViews extends Component {
 
         var formatted = departureTime.format("YYYY-MM-DDTHH:mm");
         getJourneys(formatted, from, to)
-            .then((response) => parseJourneyPlan(response, maxTime))
+            .then((response) => parseJourneyPlan(response))
             .then((departureTimes) => this.setState({
                 page1: {
                     title: key1,
@@ -97,7 +114,7 @@ export default class CountdownViews extends Component {
                 }
             }))
             .then(() => getJourneys(formatted, to, from))
-            .then((response) => parseJourneyPlan(response, maxTime))
+            .then((response) => parseJourneyPlan(response))
             .then((departureTimes) => this.setState({
                 page2: {
                     title: key2,
@@ -110,6 +127,24 @@ export default class CountdownViews extends Component {
 
     _renderDotIndicator() {
         return <PagerDotIndicator pageCount={2}/>;
+    }
+
+    clockFilter(departureTime) {
+        return departureTime.isBetween(moment(), moment().add(59, 'minutes'));
+    }
+
+    modeFilter(mode, includeRail, includeBus, includeFerry) {
+        if (mode==null) {
+            return true;
+        }
+        var m = mode.toLowerCase();
+        var rail = (includeRail && m.indexOf('rail')>-1);
+        var bus = (includeBus && m.indexOf('bus')>-1);
+        var ferry = (includeFerry && m.indexOf('ferry')>-1);
+        var other = m.indexOf('rail')<0 && m.indexOf('bus')<0 && m.indexOf('ferry')<0;
+
+        console.log(`${m} = Include rail: ${rail}-${includeRail}, bus: ${bus}, ferry: ${ferry}, other: ${other}`)
+        return rail || bus || ferry || other;
     }
 
     render() {
@@ -125,10 +160,14 @@ export default class CountdownViews extends Component {
                 indicator={this._renderDotIndicator()}>
 
                 <View style={styles.container}>
-                    <WatchView title={title1} departureTimes={departures1}/>
+                    <WatchView title={title1} departureTimes={departures1}
+                               clockfaceFilter={this.clockFilter.bind(this)}
+                                modeFilter={this.modeFilter.bind(this)}/>
                 </View>
                 <View style={styles.container}>
-                    <WatchView title={title2} departureTimes={departures2}/>
+                    <WatchView title={title2} departureTimes={departures2}
+                               clockfaceFilter={this.clockFilter.bind(this)}
+                               modeFilter={this.modeFilter.bind(this)}/>
                 </View>
 
             </IndicatorViewPager>
@@ -139,12 +178,12 @@ export default class CountdownViews extends Component {
 const styles = StyleSheet.create({
     indicatorView : {
         flex: 1,
-        backgroundColor: '#F5FCFF',
+        backgroundColor: 'white',
     },
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#F5FCFF',
+        backgroundColor: 'white',
     },
 });

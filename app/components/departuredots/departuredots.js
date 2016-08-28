@@ -45,8 +45,12 @@ class DepartureDots extends Component {
                 toValue : dot,
                 easing  : Easing.bounce,
                 delay   : 200,
-                duration: 1000
-            }).start();
+                duration: this.state && this.state.firstAnimationDone? 0 : 2000
+            }).start((event)=>  {
+                if (event.finished) {
+                    this.state.firstAnimationDone = true;
+                }
+            });
             index++;
             return (
                 <Animated.Image key={`${dot}-${index}`} style={[styles.dots,

@@ -67,7 +67,7 @@ export default class Countdown extends Component {
             clearTimeout(this.timer);
             this.timer = null;
         }
-        console.log(`got new props ${JSON.stringify(nextProps, null, 4)}`);
+        //console.log(`got new props ${JSON.stringify(nextProps, null, 4)}`);
         this.setState({departures: nextProps.departures});
         this.sleep(300).then(() => this.updateCountdown());
     }
@@ -92,12 +92,13 @@ export default class Countdown extends Component {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: 'transparent',
-        height: 200,
+        height: 150,
         justifyContent: 'center',
         alignItems: 'stretch',
     },
     results: {
         textAlign : 'center',
+        alignSelf: 'stretch',
         flexDirection: 'column',
         backgroundColor: 'transparent',
         fontFamily : 'sans-serif-light',

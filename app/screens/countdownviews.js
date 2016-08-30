@@ -16,8 +16,9 @@ import {
     Image,
     View
 } from 'react-native';
+const Platform = require('Platform');
 
-import store from 'react-native-simple-store';
+import {lightFont} from '../common/styles';
 import moment from 'moment';
 import {getJourneys} from '../services/silverrail'
 import WatchView from './watchview'
@@ -35,6 +36,7 @@ export default class CountdownViews extends Component {
         this.state = {
             visibleHeight: Dimensions.get('window').height
         }
+
     }
 
     componentWillReceiveProps(newProps) {
@@ -110,6 +112,12 @@ export default class CountdownViews extends Component {
         this.origin = fromStop;
         this.destination = toStop;
 
+        if (this.title == null) {
+            this.updateTitle({
+                position:0
+            })
+        }
+
         var from = (fromStop.SupportedModes.toLowerCase() == 'Bus') ?
             fromStop.Position :
             fromStop.StopUid;
@@ -183,26 +191,31 @@ export default class CountdownViews extends Component {
         var departures2 = this.state && this.state.page2 && this.state.page2.departureTimes;
 
 
-        var title = this.state.title ||  "Mitchelton Station to Central Station";
+        var title = this.state.title ||  "";
+        var marginTop = Platform.OS==='ios'? 32 : 0;
         return (
             <View style={{
                 flex: 1,
-                marginTop: 32,
+                marginTop: marginTop,
                 backgroundColor: 'white',
             }}>
                 <View style={{
                     flexDirection : 'row',
                     alignItems: 'center',
+                    backgroundColor: '#999',
+                    height: 35,
+                    paddingLeft: 3,
                     justifyContent: 'space-between'
                 }}>
                     <TouchableOpacity style={{alignSelf: 'flex-start'}} onPress={this.gotoSettings.bind(this)}>
-                        <Icon name="bars" size={30} color="#333"/>
+                        <Icon name="bars" size={30} color="#ccc"/>
                     </TouchableOpacity>
                     <Text style={{
                         flex: 1,
                         textAlign : 'center',
-                        color: 'black'
-                    }}>{title}</Text>
+                        fontFamily: lightFont,
+                        color: '#fff'
+                    }}>{title.toUpperCase()}</Text>
                 </View>
 
 

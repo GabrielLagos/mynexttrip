@@ -34,7 +34,7 @@ class MainView extends Component {
 
         this.sleep(2000)
             .then(() => store.get('settings'))
-            .then((settings) => this.setState({settings: settings | []}))
+            .then((settings) => this.setState({settings: settings || []}))
             .then(() => store.get('onboarding'))
             .then((onBoarding) => this.setState(
                 {

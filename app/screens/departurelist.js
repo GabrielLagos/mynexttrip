@@ -10,8 +10,7 @@ import {
     ScrollView,
     View
 } from 'react-native';
-import moment from 'moment';
-
+import {lightFont} from '../common/styles'
 
 export default class DepartureList extends Component {
     constructor(props) {
@@ -72,6 +71,6 @@ const styles = StyleSheet.create({
     departureDescription: {
         alignSelf: 'center',
         color: 'black',
-        fontFamily : 'sans-serif'
+        fontFamily : lightFont
     }
 });

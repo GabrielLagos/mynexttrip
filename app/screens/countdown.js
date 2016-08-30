@@ -14,6 +14,7 @@ import {
     View
 } from 'react-native';
 import moment from 'moment';
+import {lightFont} from '../common/styles'
 
 export default class Countdown extends Component {
     constructor(props) {
@@ -28,11 +29,11 @@ export default class Countdown extends Component {
     updateCountdown() {
         var departures = this.state ? this.state.departures : [];
         var now = new moment();
-        console.log(`now: ${now.format("HH:mm")}`);
+        //console.log(`now: ${now.format("HH:mm")}`);
         var next = departures.reduce((current, element) => {
-            console.log(`current time: ${element.departTime.format("HH.mm")}`)
+            //console.log(`current time: ${element.departTime.format("HH.mm")}`)
             if (current == null && element.departTime.isAfter(now)) {
-                console.log(`found next time ${element.departTime.format("HH.mm")}`);
+                //console.log(`found next time ${element.departTime.format("HH.mm")}`);
                 return element.departTime;
             }
             return current;
@@ -44,7 +45,7 @@ export default class Countdown extends Component {
         });
         now = new moment();
         var ms = ((60-now.seconds())*1000) - now.milliseconds();
-        console.log(`ms = ${ms}`);
+        //console.log(`ms = ${ms}`);
         this.timer = setTimeout(this.updateCountdown.bind(this), ms);
     }
 
@@ -92,16 +93,22 @@ export default class Countdown extends Component {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: 'transparent',
-        height: 150,
+        height: 50,
         justifyContent: 'center',
         alignItems: 'stretch',
     },
     results: {
+        color: '#333',
         textAlign : 'center',
         alignSelf: 'stretch',
         flexDirection: 'column',
-        backgroundColor: 'transparent',
-        fontFamily : 'sans-serif-light',
-        fontSize: 40,
+        fontSize: 30,
+        fontFamily : lightFont,
+/*
+        textShadowOffset: {width: 2, height: 2},
+        textShadowRadius: 1,
+        textShadowColor: '#333',
+        fontSize: 20,
+*/
     }
 });

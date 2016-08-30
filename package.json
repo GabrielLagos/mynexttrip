@@ -11,6 +11,7 @@
     "react-native": "0.31.0",
     "react-native-checkbox": "^1.0.15",
     "react-native-simple-store": "^1.1.0",
+    "react-native-vector-icons": "^2.1.0",
     "react-native-video": "^0.9.0",
     "rn-viewpager": "^1.1.3"
   }

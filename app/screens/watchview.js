@@ -18,6 +18,7 @@ import WatchFace from '../components/watchface/watchface';
 import DepartureDots from '../components/departuredots/departuredots'
 import DeparturesList from './departurelist';
 import Countdown from './countdown';
+import moment from "moment";
 
 export default class WatchView extends Component {
     constructor(props) {
@@ -70,18 +71,6 @@ export default class WatchView extends Component {
         var includeBus = this.state && this.state.includeBus;
         var includeFerry = this.state && this.state.includeFerry;
         if (this.state && this.state.departureTimes) {
-            minutes = this.state.departureTimes
-                .filter(
-                    (element) => this.props.modeFilter ?
-                        this.props.modeFilter(element.mode, includeRail, includeBus, includeFerry) : true)
-                .filter(
-                    (element) => this.props.clockfaceFilter ?
-                        this.props.clockfaceFilter(element.departTime) : true)
-                .map((element) => {
-                    //console.log(`element is ${JSON.stringify(element, null, 4)}`);
-                    return element.departTime.get("minutes");
-                });
-
             departures = this.state.departureTimes
                 .filter(
                     (element) => {
@@ -90,13 +79,31 @@ export default class WatchView extends Component {
                         //console.log(`do we filter ${JSON.stringify(element, null, 4)}? ${filter}`);
                         return filter;
                     });
+
+            var alreadyGone = 0;
+            departures = departures.reverse().filter(
+                (element) => {
+                    if (element.departTime.isBefore(moment())) {
+                        alreadyGone++;
+                    }
+                    return (alreadyGone<2);
+                }
+            ).reverse();
+            minutes = departures
+                .filter(
+                    (element) => this.props.clockfaceFilter ?
+                        this.props.clockfaceFilter(element.departTime) : true)
+                .map((element) => {
+                    //console.log(`element is ${JSON.stringify(element, null, 4)}`);
+                    return element.departTime.get("minutes");
+                });
         }
 
         var title = this.state && this.state.title || "";
 
         var view = (
             <View style={styles.subcontainer}>
-                <Text>{title}</Text>
+                {/*<Text>{title}</Text>*/}
                 <Countdown departures={departures}/>
                 <WatchFace size={300} style={styles.watchFace}>
                     <DepartureDots size={300} dots={minutes}/>
@@ -114,6 +121,7 @@ export default class WatchView extends Component {
                     />
                     <CheckBox
                         label='Ferry'
+
                         checked={this.state && this.state.includeFerry}
                         onChange={this.includeFerryMode.bind(this)}
                     />

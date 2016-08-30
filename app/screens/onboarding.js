@@ -19,6 +19,7 @@ import store from 'react-native-simple-store';
 import {IndicatorViewPager, PagerDotIndicator} from 'rn-viewpager';
 import MorningScreen from '../screens/morning';
 import EveningScreen from '../screens/evening';
+import {lightFont} from '../common/styles'
 
 export default class Onboarding extends Component {
 
@@ -98,13 +99,13 @@ let styles = StyleSheet.create({
         flexDirection : 'column',
         justifyContent : 'center',
         alignItems     : 'stretch',
-        backgroundColor: '#2dc84d',
+        backgroundColor: '#1d114d',
         padding:10,
     },
     description : {
         fontSize: 22,
         fontWeight: '100',
-        fontFamily: 'sans-serif-light',
+        fontFamily: lightFont,
         textAlign: 'center',
         color: 'white',
         marginBottom: 10,
@@ -120,7 +121,7 @@ let styles = StyleSheet.create({
         borderRadius : 10,
         alignSelf : 'stretch',
         textAlign: 'center',
-        fontFamily: 'sans-serif-light',
+        fontFamily: lightFont,
         fontWeight : '100',
         color       : '#ccc',
         backgroundColor: 'rgba(0,0,0,0.4)',

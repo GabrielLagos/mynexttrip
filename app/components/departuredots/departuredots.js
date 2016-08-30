@@ -19,8 +19,6 @@ class DepartureDots extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("componentWillReceiveProps");
-
         this.setState(
             {
                 dots: (nextProps && nextProps.departures)
@@ -31,10 +29,9 @@ class DepartureDots extends Component {
     }
 
     renderDots() {
-        console.log("renderDots");
         var index=0;
         return this.props.dots.map((dot) => {
-            console.log(`new dot found ${dot}`);
+            //console.log(`new dot found ${dot}`);
             var anim                            = new Animated.Value(0);
             var interpolatedRotateDotsAnimation =
                     anim.interpolate({

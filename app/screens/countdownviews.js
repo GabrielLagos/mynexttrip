@@ -9,6 +9,7 @@ import {
     Text,
     AppState,
     UIManager,
+    TouchableOpacity,
     LayoutAnimation,
     Dimensions,
     Keyboard,
@@ -22,6 +23,7 @@ import {getJourneys} from '../services/silverrail'
 import WatchView from './watchview'
 import {parseJourneyPlan} from '../services/parseJourneyPlan';
 import {IndicatorViewPager, PagerDotIndicator} from 'rn-viewpager';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const FIVE_MINUTES = 1000 * 60 * 5;
 
@@ -36,12 +38,19 @@ export default class CountdownViews extends Component {
     }
 
     componentWillReceiveProps(newProps) {
-        this.setState({stops: newProps.stops});
+        console.log(`got new props with stops: ${JSON.stringify(newProps, null, 4)}\n\n\nstate: ${JSON.stringify(this.state, null, 4)}`);
+        this.setState({settings: newProps.stops});
+        this.stops = newProps.stops;
+    }
+
+    sleep(time) {
+        return new Promise((resolve) => setTimeout(resolve, time));
     }
 
     componentDidMount() {
         this.stops = this.props.stops || null;
-        this.updateDepartureTimes();
+        //this.setState({stops: settings});
+        this.sleep(800).then(() => this.updateDepartureTimes());
         //update departure times every 5 minutes
         this.timer = setInterval(this.updateDepartureTimes.bind(this), FIVE_MINUTES);
         AppState.addEventListener('change', this.handleAppStateChange.bind(this));
@@ -57,7 +66,7 @@ export default class CountdownViews extends Component {
     handleAppStateChange(currentAppState) {
         if (currentAppState == 'active') {
             console.log("app has woken up! starting departureTimes updater (runs every 5 minutes)...");
-            this.updateDepartureTimes();
+            this.sleep(800).then(() => this.updateDepartureTimes());
             //update departure times every 5 minutes
             this.timer = setInterval(this.updateDepartureTimes.bind(this), FIVE_MINUTES);
         } else {
@@ -69,8 +78,10 @@ export default class CountdownViews extends Component {
     }
 
     updateDepartureTimes() {
-        if (this.stops == null) {
-            console.log("no stops passed in!");
+        this.stops = this.state.stops || this.props.stops;
+        if (this.stops == null || this.stops.morning == null || this.stops.evening == null) {
+            //console.log(`no stops passed in! ${JSON.stringify(this.state, null, 4)}`);
+            this.sleep(10000).then(() => this.updateDepartureTimes());
             return;
         }
         var midday = new Date();
@@ -95,6 +106,9 @@ export default class CountdownViews extends Component {
             key1 = "morning";
             key2 = "evening";
         }
+
+        this.origin = fromStop;
+        this.destination = toStop;
 
         var from = (fromStop.SupportedModes.toLowerCase() == 'Bus') ?
             fromStop.Position :
@@ -134,17 +148,32 @@ export default class CountdownViews extends Component {
     }
 
     modeFilter(mode, includeRail, includeBus, includeFerry) {
-        if (mode==null) {
+        if (mode == null) {
             return true;
         }
         var m = mode.toLowerCase();
-        var rail = (includeRail && m.indexOf('rail')>-1);
-        var bus = (includeBus && m.indexOf('bus')>-1);
-        var ferry = (includeFerry && m.indexOf('ferry')>-1);
-        var other = m.indexOf('rail')<0 && m.indexOf('bus')<0 && m.indexOf('ferry')<0;
+        var rail = (includeRail && m.indexOf('rail') > -1);
+        var bus = (includeBus && m.indexOf('bus') > -1);
+        var ferry = (includeFerry && m.indexOf('ferry') > -1);
+        var other = m.indexOf('rail') < 0 && m.indexOf('bus') < 0 && m.indexOf('ferry') < 0;
 
-        console.log(`${m} = Include rail: ${rail}-${includeRail}, bus: ${bus}, ferry: ${ferry}, other: ${other}`)
+//        console.log(`${m} = Include rail: ${rail}-${includeRail}, bus: ${bus}, ferry: ${ferry}, other: ${other}`)
         return rail || bus || ferry || other;
+    }
+
+    gotoSettings() {
+        console.log("gotoSettings");
+        this.props && this.props.onSettingsPressed && this.props.onSettingsPressed();
+    }
+
+    updateTitle(event) {
+        if (event.position==0) {
+            this.setState({title: `${this.origin.Description} to ${this.destination.Description}`});
+        } else {
+            this.setState({title: `${this.destination.Description} to ${this.origin.Description}`});
+        }
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+
     }
 
     render() {
@@ -153,30 +182,55 @@ export default class CountdownViews extends Component {
         var title2 = this.state && this.state.page2 && this.state.page2.title;
         var departures2 = this.state && this.state.page2 && this.state.page2.departureTimes;
 
+
+        var title = this.state.title ||  "Mitchelton Station to Central Station";
         return (
-            <IndicatorViewPager
-                initialPage={0}
-                style={styles.indicatorView}
-                indicator={this._renderDotIndicator()}>
-
-                <View style={styles.container}>
-                    <WatchView title={title1} departureTimes={departures1}
-                               clockfaceFilter={this.clockFilter.bind(this)}
-                                modeFilter={this.modeFilter.bind(this)}/>
+            <View style={{
+                flex: 1,
+                marginTop: 32,
+                backgroundColor: 'white',
+            }}>
+                <View style={{
+                    flexDirection : 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                }}>
+                    <TouchableOpacity style={{alignSelf: 'flex-start'}} onPress={this.gotoSettings.bind(this)}>
+                        <Icon name="bars" size={30} color="#333"/>
+                    </TouchableOpacity>
+                    <Text style={{
+                        flex: 1,
+                        textAlign : 'center',
+                        color: 'black'
+                    }}>{title}</Text>
                 </View>
-                <View style={styles.container}>
-                    <WatchView title={title2} departureTimes={departures2}
-                               clockfaceFilter={this.clockFilter.bind(this)}
-                               modeFilter={this.modeFilter.bind(this)}/>
-                </View>
 
-            </IndicatorViewPager>
+
+                <IndicatorViewPager
+                    initialPage={0}
+                    onPageSelected={this.updateTitle.bind(this)}
+                    style={styles.indicatorView}
+                    indicator={this._renderDotIndicator()}>
+
+                    <View style={styles.container}>
+                        <WatchView title={title1} departureTimes={departures1}
+                                   clockfaceFilter={this.clockFilter.bind(this)}
+                                   modeFilter={this.modeFilter.bind(this)}/>
+                    </View>
+                    <View style={styles.container}>
+                        <WatchView title={title2} departureTimes={departures2}
+                                   clockfaceFilter={this.clockFilter.bind(this)}
+                                   modeFilter={this.modeFilter.bind(this)}/>
+                    </View>
+
+                </IndicatorViewPager>
+            </View>
         )
     }
 }
 
 const styles = StyleSheet.create({
-    indicatorView : {
+    indicatorView: {
         flex: 1,
         backgroundColor: 'white',
     },

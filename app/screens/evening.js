@@ -13,6 +13,7 @@ import {
     View
 } from 'react-native';
 import {getLocalities} from '../services/silverrail'
+import {lightFont} from '../common/styles'
 
 export default class EveningScreen extends Component {
 
@@ -52,7 +53,7 @@ export default class EveningScreen extends Component {
 
     render() {
         var results = this.state && this.state.locations && this.state.locations.length && this.state.locations.length > 0 && this.state.locations || [];
-        results     = results.slice(0, 3);
+        results     = results.slice(0, 5);
         console.log("results = " + JSON.stringify(results));
         return (
             <Image style={[styles.video] } source={require('../images/evening.png')}>
@@ -116,12 +117,8 @@ let styles = StyleSheet.create({
     letsGoText : {
         paddingBottom: 10,
         paddingTop: 10,
-        borderWidth: 1,
-        borderColor: '#d6d6d6',
-        borderRadius: 40,
-        borderStyle: 'solid',
         alignSelf: 'center',
-        fontFamily: 'sans-serif-light',
+        fontFamily: lightFont,
         fontWeight: '400',
         fontSize    : 22,
         textAlign   : 'center',
@@ -147,7 +144,7 @@ let styles = StyleSheet.create({
         }
     },
     description: {
-        fontFamily: 'sans-serif-light',
+        fontFamily: lightFont,
         fontSize    : 22,
         textAlign   : 'center',
         color       : 'white',
@@ -199,6 +196,7 @@ let styles = StyleSheet.create({
     textInput  : {
         backgroundColor: 'rgba(255,255,255, 0)',
         fontSize       : 25,
+        height: 40,
         margin         : 0,
         textAlign: 'center',
         color          : 'white'

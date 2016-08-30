@@ -13,6 +13,7 @@ import {
     View
 } from 'react-native';
 import {getLocalities} from '../services/silverrail'
+import {lightFont} from '../common/styles'
 
 class MorningScreen extends Component {
 
@@ -117,10 +118,10 @@ let styles = StyleSheet.create({
         }
     },
     description: {
-        fontSize: 22,
+        fontSize: 16,
         textAlign: 'center',
         color: 'white',
-        fontFamily: 'sans-serif-light',
+        fontFamily: lightFont,
         marginBottom: 10,
     },
     buttonText: {
@@ -170,6 +171,7 @@ let styles = StyleSheet.create({
         fontSize: 25,
         textAlign: 'center',
         margin: 0,
+        height: 40,
         color: 'white'
     }
 });

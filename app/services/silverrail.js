@@ -7,7 +7,7 @@ const default_dataset = "Brisbane";
 const baseUrl = "http://journeyplanner.silverrailtech.com";
 const API_KEY = "9331C64E-5A58-492E-AC03-DB827177F39E";
 exports.getJourneys = function( date, from, to) {
-    let uri = `${baseUrl}/journeyplannerservice/v2/rest/DataSets/${default_dataset}/JourneyPlan?ApiKey=${API_KEY}&format=json&MappingDataRequired=false&maxJourneys=5&RealTimeMode=Annotate&mapDataContent=none&date=${date}&from=${from}&to=${to}`;
+    let uri = `${baseUrl}/journeyplannerservice/v2/rest/DataSets/${default_dataset}/JourneyPlan?ApiKey=${API_KEY}&format=json&MappingDataRequired=false&maxJourneys=10&RealTimeMode=Annotate&mapDataContent=none&date=${date}&from=${from}&to=${to}`;
     console.log(uri);
 
     return fetch(uri)
